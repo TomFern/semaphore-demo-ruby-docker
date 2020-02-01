@@ -1,4 +1,4 @@
-![Build Status](https://tomfern.semaphoreci.com/badges/dockerizing-ruby.svg)
+![Build Status](https://tomfern.semaphoreci.com/badges/semaphore-demo-ruby-docker.svg)
 
 # Dockerizing Ruby Tutorial
 
@@ -36,4 +36,8 @@ $ docker build --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) -t $DO
 $ docker build --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) -t $DOCKER_USERNAME/dockerizing-ruby-nginx:latest -f Dockerfile.nginx .
 ```
 
+## License
 
+Copyright (c) 2020 Rendered Text
+
+Distributed under the MIT License. See the file LICENSE.md.
