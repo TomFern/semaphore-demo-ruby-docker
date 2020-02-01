@@ -1,0 +1,7 @@
+create Dockerfile
+
+Build
+5524  docker build -t rails-toolbox --build-arg USER_ID=$(id -u)  --build-arg GROUP_ID=$(id -g) .
+
+Run, with volume and rails new
+5525  docker run -it -v $PWD:/opt/app rails-toolbox rails new --skip-bundle drkiq

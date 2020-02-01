@@ -1,0 +1,7 @@
+
+docker-compose run --user "$(id -u):$(id -g)" drkiq rails g controller Pages home
+docker-compose run --user "$(id -u):$(id -g)" drkiq rails g job counter
+
+
+docker-compose run --user "$(id -u):$(id -g)" drkiq rails webpacker:install
+docker-compose run --user "$(id -u):$(id -g)" drkiq rails assets:precompile

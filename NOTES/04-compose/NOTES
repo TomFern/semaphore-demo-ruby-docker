@@ -1,0 +1,3 @@
+add hosts.config to config/environment/development so drkiq can access from other container
+
+add nginx container
