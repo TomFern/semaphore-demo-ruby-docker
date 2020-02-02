@@ -5,13 +5,17 @@ agent:
     type: e1-standard-2
     os_image: ubuntu1804
 blocks:
-  - name: Docker Build
+  - name: Build
     task:
       secrets:
         - name: dockerhub
       jobs:
         - name: Build drkiq
           commands:
+            - checkout
+            - >-
+              echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}"
+              --password-stdin
             - 'docker pull $DOCKER_USERNAME/dockerizing-ruby-drkiq:latest || true'
             - >-
               docker build -t $DOCKER_USERNAME/dockerizing-ruby-drkiq:latest
@@ -49,6 +53,6 @@ blocks:
           - 'docker-compose run --user "$(id -u):$(id -g)" drkiq rake db:reset'
           - 'docker-compose run --user "$(id -u):$(id -g)" drkiq rake db:migrate'
       jobs:
-        - name: Rail Test
+        - name: Rails Test
           commands:
             - 'docker-compose run --user "$(id -u):$(id -g)" drkiq rails test'
