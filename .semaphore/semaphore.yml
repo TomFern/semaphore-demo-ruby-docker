@@ -12,10 +12,6 @@ blocks:
       jobs:
         - name: Build drkiq
           commands:
-            - checkout
-            - >-
-              echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}"
-              --password-stdin
             - 'docker pull $DOCKER_USERNAME/dockerizing-ruby-drkiq:latest || true'
             - >-
               docker build -t $DOCKER_USERNAME/dockerizing-ruby-drkiq:latest
