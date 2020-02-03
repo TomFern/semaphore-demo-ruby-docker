@@ -25,17 +25,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends nodejs yarn
 RUN gem install rails bundler
 
 # Install gems
-COPY drkiq/Gemfile Gemfile
+COPY drkiq/ .
 WORKDIR /opt/app/drkiq
+RUN yarn install --check-files
 RUN bundle install
+RUN rails webpacker:install
+RUN rails assets:precompile
 
 # Start server as user
-COPY drkiq/ .
 RUN chown -R user:user /opt/app
 USER $USER_ID
-RUN yarn install --check-files
-# RUN rails webpacker:install
-# RUN rails assets:precompile
 VOLUME ["$INSTALL_PATH/public"]
 CMD bundle exec unicorn -c config/unicorn.rb
-
