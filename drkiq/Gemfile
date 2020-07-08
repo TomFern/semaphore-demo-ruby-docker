@@ -59,4 +59,5 @@ gem 'unicorn', '~> 5.5.2'
 gem 'pg', '~> 1.2.2'
 gem 'sidekiq', '~> 6.0.4'
 gem 'redis-rails', '~> 5.0.2'
+gem 'concurrent-ruby', '~> 1.1.0'
 
