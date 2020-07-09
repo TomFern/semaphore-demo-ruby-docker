@@ -32,7 +32,7 @@ RUN bundle install
 RUN yarn install --check-files
 
 # Start server as user
-RUN chown -R user:user /opt/app
+RUN chown -R user:user /opt/app && chmod +t /tmp
 USER $USER_ID
 VOLUME ["$INSTALL_PATH/public"]
 CMD bundle exec unicorn -c config/unicorn.rb
