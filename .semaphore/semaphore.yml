@@ -37,6 +37,7 @@ blocks:
           - 'docker pull $DOCKER_USERNAME/dockerizing-ruby-drkiq:latest || true'
           - 'docker-compose run --user "$(id -u):$(id -g)" drkiq rake db:reset'
           - 'docker-compose run --user "$(id -u):$(id -g)" drkiq rake db:migrate'
+          - 'docker-compose run --user "$(id -u):$(id -g)" drkiq rails webpacker:install'
       jobs:
         - name: Rails Test
           commands:
