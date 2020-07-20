@@ -25,13 +25,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends nodejs yarn
 RUN gem install rails bundler
 
 # Install gems
-COPY drkiq/Gemfile Gemfile
 WORKDIR /opt/app/drkiq
+COPY drkiq/Gemfile* /opt/app/drkiq/
+COPY drkiq/yarn.lock /opt/app/drkiq/
 RUN bundle install
+RUN yarn install --check-files
 
 # Start server as user
-RUN chown -R user:user /opt/app
+RUN chown -R user:user /opt/app && chmod +t /tmp
 USER $USER_ID
 VOLUME ["$INSTALL_PATH/public"]
 CMD bundle exec unicorn -c config/unicorn.rb
+#CMD bash
 

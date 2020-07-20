@@ -13,26 +13,17 @@ blocks:
         - name: Build drkiq
           commands:
             - 'docker pull $DOCKER_USERNAME/dockerizing-ruby-drkiq:latest || true'
-            - >-
-              docker build -t $DOCKER_USERNAME/dockerizing-ruby-drkiq:latest
-              --cache-from=$DOCKER_USERNAME/dockerizing-ruby-drkiq:latest
-              --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) -f
-              Dockerfile.production .
+            - 'docker build -t $DOCKER_USERNAME/dockerizing-ruby-drkiq:latest --cache-from=$DOCKER_USERNAME/dockerizing-ruby-drkiq:latest --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) -f Dockerfile.production .'
             - 'docker push $DOCKER_USERNAME/dockerizing-ruby-drkiq:latest'
         - name: Build nginx
           commands:
             - 'docker pull $DOCKER_USERNAME/dockerizing-ruby-nginx:latest || true'
-            - >-
-              docker build -t $DOCKER_USERNAME/dockerizing-ruby-nginx:latest
-              --cache-from=$DOCKER_USERNAME/dockerizing-ruby-nginx:latest -f
-              Dockerfile.nginx .
+            - 'docker build -t $DOCKER_USERNAME/dockerizing-ruby-nginx:latest --cache-from=$DOCKER_USERNAME/dockerizing-ruby-nginx:latest -f Dockerfile.nginx .'
             - 'docker push $DOCKER_USERNAME/dockerizing-ruby-nginx:latest'
       prologue:
         commands:
           - checkout
-          - >-
-            echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}"
-            --password-stdin
+          - 'echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin'
   - name: Integration Tests
     task:
       secrets:
@@ -42,13 +33,16 @@ blocks:
           - 'checkout '
           - cp env-example .env
           - cat docker-compose.test.yml | envsubst | tee docker-compose.yml
-          - >-
-            echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}"
-            --password-stdin
+          - 'echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin'
           - 'docker pull $DOCKER_USERNAME/dockerizing-ruby-drkiq:latest || true'
-          - 'docker-compose run --user "$(id -u):$(id -g)" drkiq rake db:reset'
-          - 'docker-compose run --user "$(id -u):$(id -g)" drkiq rake db:migrate'
+          - 'docker-compose run -e TMPDIR=/var/tmp drkiq rake db:reset'
+          - 'docker-compose run -e TMPDIR=/var/tmp drkiq rake db:migrate'
+          - '#docker-compose run --user "$(id -u):$(id -g)" drkiq rails webpacker:install'
       jobs:
         - name: Rails Test
           commands:
-            - 'docker-compose run --user "$(id -u):$(id -g)" drkiq rails test'
+            - docker-compose run -e TMPDIR=/var/tmp drkiq rails test
+            - '# --user "$(id -u):$(id -g)"'
+      env_vars:
+        - name: RAILS_ENV
+          value: test
