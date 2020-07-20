@@ -41,7 +41,8 @@ blocks:
       jobs:
         - name: Rails Test
           commands:
-            - 'docker-compose run --user "$(id -u):$(id -g)" drkiq rails test'
+            - docker-compose run -e TMPDIR=/var/tmp drkiq rails test
+            - '# --user "$(id -u):$(id -g)"'
       env_vars:
         - name: RAILS_ENV
           value: test
