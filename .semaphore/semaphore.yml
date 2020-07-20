@@ -35,8 +35,8 @@ blocks:
           - cat docker-compose.test.yml | envsubst | tee docker-compose.yml
           - 'echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin'
           - 'docker pull $DOCKER_USERNAME/dockerizing-ruby-drkiq:latest || true'
-          - 'docker-compose run TMPDIR=/var/tmp drkiq rake db:reset'
-          - 'docker-compose run TMPDIR=/var/tmp drkiq rake db:migrate'
+          - 'docker-compose run -e TMPDIR=/var/tmp drkiq rake db:reset'
+          - 'docker-compose run -e TMPDIR=/var/tmp drkiq rake db:migrate'
           - '#docker-compose run --user "$(id -u):$(id -g)" drkiq rails webpacker:install'
       jobs:
         - name: Rails Test
