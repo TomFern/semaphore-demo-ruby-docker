@@ -5,12 +5,12 @@ FROM ruby:2.7.0 AS drkiq-production
 MAINTAINER SemaphoreCI
 
 # Docker build arguments
-ARG USER_ID
-ARG GROUP_ID
+# ARG USER_ID
+# ARG GROUP_ID
 
 # Create a user with the same ID and GID
-RUN addgroup --gid $GROUP_ID user
-RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
+# RUN addgroup --gid $GROUP_ID user
+# RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
 
 # Default directory
 ENV INSTALL_PATH /opt/app
@@ -33,7 +33,7 @@ RUN rails webpacker:install
 RUN rails assets:precompile
 
 # Start server as user
-RUN chown -R user:user /opt/app /tmp/* /db && chmod +t /tmp
-USER $USER_ID
+# RUN chown -R user:user /opt/app /tmp/* /db && chmod +t /tmp
+# USER $USER_ID
 VOLUME ["$INSTALL_PATH/public"]
 CMD bundle exec unicorn -c config/unicorn.rb
