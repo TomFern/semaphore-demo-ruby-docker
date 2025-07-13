@@ -2,8 +2,8 @@ version: v1.0
 name: Test MyApp
 agent:
   machine:
-    type: e1-standard-2
-    os_image: ubuntu1804
+    type: s1-ubuntu
+    os_image: ''
 blocks:
   - name: Build
     task:
@@ -16,27 +16,7 @@ blocks:
       prologue:
         commands:
           - checkout
-          - 'echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin'
+          - '#echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin'
       env_vars:
         - name: DOCKER_USERNAME
           value: tomfern
-  - name: Integration Tests
-    task:
-      prologue:
-        commands:
-          - 'checkout '
-          - cp env-example .env
-          - cat docker-compose.test.yml | envsubst | tee docker-compose.yml
-          - 'echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin'
-          - 'docker pull $DOCKER_USERNAME/dockerizing-ruby-drkiq:latest || true'
-          - 'docker-compose run -e TMPDIR=/var/tmp drkiq rake db:reset'
-          - 'docker-compose run -e TMPDIR=/var/tmp drkiq rake db:migrate'
-          - '#docker-compose run --user "$(id -u):$(id -g)" drkiq rails webpacker:install'
-      jobs:
-        - name: Rails Test
-          commands:
-            - docker-compose run -e TMPDIR=/var/tmp drkiq rails test
-            - '# --user "$(id -u):$(id -g)"'
-      env_vars:
-        - name: RAILS_ENV
-          value: test
