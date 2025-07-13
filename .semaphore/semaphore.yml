@@ -7,27 +7,21 @@ agent:
 blocks:
   - name: Build
     task:
-      secrets:
-        - name: dockerhub
       jobs:
-        - name: Build drkiq
-          commands:
-            - 'docker pull $DOCKER_USERNAME/dockerizing-ruby-drkiq:latest || true'
-            - 'docker build -t $DOCKER_USERNAME/dockerizing-ruby-drkiq:latest --cache-from=$DOCKER_USERNAME/dockerizing-ruby-drkiq:latest --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) -f Dockerfile.production .'
-            - 'docker push $DOCKER_USERNAME/dockerizing-ruby-drkiq:latest'
         - name: Build nginx
           commands:
-            - 'docker pull $DOCKER_USERNAME/dockerizing-ruby-nginx:latest || true'
-            - 'docker build -t $DOCKER_USERNAME/dockerizing-ruby-nginx:latest --cache-from=$DOCKER_USERNAME/dockerizing-ruby-nginx:latest -f Dockerfile.nginx .'
-            - 'docker push $DOCKER_USERNAME/dockerizing-ruby-nginx:latest'
+            - '#docker pull $DOCKER_USERNAME/dockerizing-ruby-nginx:latest || true'
+            - 'docker build -t $DOCKER_USERNAME/dockerizing-ruby-nginx:latest -f Dockerfile.nginx .'
+            - '#docker push $DOCKER_USERNAME/dockerizing-ruby-nginx:latest'
       prologue:
         commands:
           - checkout
           - 'echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin'
+      env_vars:
+        - name: DOCKER_USERNAME
+          value: tomfern
   - name: Integration Tests
     task:
-      secrets:
-        - name: dockerhub
       prologue:
         commands:
           - 'checkout '
